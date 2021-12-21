@@ -142,3 +142,53 @@ export default function App() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#fff",
+    flex: 1,
+    paddingTop: Constants.statusBarHeight,
+  },
+  heading: {
+    paddingTop: 20,
+    fontSize: 30,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  flexRow: {
+    flexDirection: "row",
+    paddingBottom: 10,
+  },
+  input: {
+    borderColor: "#4630eb",
+    borderRadius: 4,
+    borderWidth: 1,
+    flex: 1,
+    height: 48,
+    margin: 16,
+    padding: 8,
+    fontSize: 16,
+  },
+  listArea: {
+    backgroundColor: "#f0f0f0",
+    flex: 1,
+    paddingTop: 26,
+
+  },
+  sectionContainer: {
+    marginBottom: 16,
+    marginHorizontal: 16,
+    alignItems: 'stretch',
+
+  },
+  sectionHeading: {
+    fontSize: 25,
+    marginBottom: 10,
+    fontWeight: "bold"
+  },
+  icon: {
+    marginRight: 10,
+  },
+
+
+});
