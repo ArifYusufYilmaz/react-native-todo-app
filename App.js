@@ -57,9 +57,37 @@ function Items({ done: doneHeading, onPressItem }) {
   );
 }
 export default function App(){
+  const [text, setText] = React.useState(null);
+  const [forceUpdate, forceUpdateId] = useForceUpdate();
+
+  React.useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "create table if not exists items (id integer primary key not null, done int, value text);"
+      );
+    });
+  }, []);
+
+  const add = (text) => {
+    // is text empty?
+    if (text === null || text === "") {
+      return false;
+    }
+
+    db.transaction(
+      (tx) => {
+        tx.executeSql("insert into items (done, value) values (0, ?)", [text]);
+        tx.executeSql("select * from items", [], (_, { rows }) =>
+          console.log(JSON.stringify(rows))
+        );
+      },
+      null,
+      forceUpdate
+    );
+  };
   return(
     <View>
-      
+
     </View>
   );
 }
