@@ -7,8 +7,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Icon } from 'react-native-elements';
+import Constants from "expo-constants";
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("db.db");
+
+function useForceUpdate() {
+  const [value, setValue] = useState(0);
+  return [() => setValue(value + 1), value];
+}
 
 function Items({ done: doneHeading, onPressItem }) {
   const [items, setItems] = React.useState(null);
@@ -41,22 +48,22 @@ function Items({ done: doneHeading, onPressItem }) {
             padding: 8,
             borderRadius: 8,
             marginBottom: 3,
-            
+
           }}
         >
           <Text style={{ color: done ? "#fff" : "#000" }}>
-           
+
             <View >
-              <Icon style={styles.icon} name= {done ? "done" : "pending"}/>
+              <Icon style={styles.icon} name={done ? "done" : "pending"} />
             </View>
-            <View ><Text style={{color:"#000", fontSize:15 }}>{value}  </Text></View>
+            <View ><Text style={{ color: "#000", fontSize: 15 }}>{value}  </Text></View>
           </Text>
         </TouchableOpacity>
       ))}
     </View>
   );
 }
-export default function App(){
+export default function App() {
   const [text, setText] = React.useState(null);
   const [forceUpdate, forceUpdateId] = useForceUpdate();
 
@@ -85,9 +92,53 @@ export default function App(){
       forceUpdate
     );
   };
-  return(
-    <View>
-
+  return (
+    <View style={styles.container}>
+      <Text style={styles.heading}>ToDo App</Text>
+      <>
+        <View style={styles.flexRow}>
+          <TextInput
+            onChangeText={(text) => setText(text)}
+            onSubmitEditing={() => {
+              add(text);
+              setText(null);
+            }}
+            placeholder="What do you need to do?"
+            style={styles.input}
+            value={text}
+          />
+        </View>
+        <ScrollView style={styles.listArea}>
+          <Items
+            key={`forceupdate-todo-${forceUpdateId}`}
+            done={false}
+            onPressItem={(id) =>
+              db.transaction(
+                (tx) => {
+                  tx.executeSql(`update items set done = 1 where id = ?;`, [
+                    id,
+                  ]);
+                },
+                null,
+                forceUpdate
+              )
+            }
+          />
+          <Items
+            done
+            key={`forceupdate-done-${forceUpdateId}`}
+            onPressItem={(id) =>
+              db.transaction(
+                (tx) => {
+                  tx.executeSql(`delete from items where id = ?;, [id]`);
+                },
+                null,
+                forceUpdate
+              )
+            }
+          />
+        </ScrollView>
+      </>
     </View>
   );
 }
